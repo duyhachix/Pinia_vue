@@ -1,15 +1,15 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 const useModalStore = defineStore('modal', {
   state: () => ({
-    isOpen: false
+    isOpen: false,
   }),
 
   getters: {
     hiddenClass(state) {
-      return !state.isOpen ? 'hidden' : ''
-    }
-  }
-})
+      return !state.isOpen ? 'hidden' : '';
+    },
+  },
+});
 
-export default useModalStore
+export default useModalStore;
