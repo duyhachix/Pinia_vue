@@ -1,6 +1,10 @@
 <template>
   <!-- Auth Modal -->
-  <div class="fixed z-10 inset-0 overflow-y-auto" :class="hiddenClass" id="modal">
+  <div
+    class="fixed z-10 inset-0 overflow-y-auto"
+    :class="hiddenClass"
+    id="modal"
+  >
     <div
       class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
     >
@@ -9,7 +13,9 @@
       </div>
 
       <!-- This element is to trick the browser into centering the modal contents. -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+        >&#8203;</span
+      >
 
       <div
         class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
@@ -33,19 +39,19 @@
                 href="#"
                 :class="{
                   'hover:text-white text-white bg-blue-600': tab === 'login',
-                  'hover:text-blue-600': tab === 'register'
+                  'hover:text-yellow-600': tab === 'register',
                 }"
                 @click.prevent="tab = 'login'"
                 >Login</a
               >
-            </li> 
+            </li>
             <li class="flex-auto text-center">
               <a
                 class="block rounded py-3 px-4 transition"
                 href="#"
                 :class="{
                   'hover:text-white text-white bg-blue-600': tab === 'register',
-                  'hover:text-blue-600': tab === 'login'
+                  'hover:text-yellow-600': tab === 'login',
                 }"
                 @click.prevent="tab = 'register'"
                 >Register</a
@@ -81,66 +87,107 @@
             </button>
           </form>
           <!-- Registration Form -->
-          <form v-show="tab === 'register'">
+          <vee-form
+            v-show="tab === 'register'"
+            :validation-schema="schema"
+            @submit="onRegister"
+          >
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
-              <input
+              <vee-field
+                name="name"
                 type="text"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Enter Name"
               />
+              <ErrorMessage
+                class="text-red-400 text-xs"
+                name="name"
+              ></ErrorMessage>
             </div>
             <!-- Email -->
             <div class="mb-3">
               <label class="inline-block mb-2">Email</label>
-              <input
+              <vee-field
+                name="email"
                 type="email"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Enter Email"
               />
+              <ErrorMessage
+                class="text-red-400 text-xs"
+                name="email"
+              ></ErrorMessage>
             </div>
             <!-- Age -->
             <div class="mb-3">
               <label class="inline-block mb-2">Age</label>
-              <input
+              <vee-field
+                name="age"
                 type="number"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
               />
+              <ErrorMessage
+                class="text-red-400 text-xs"
+                name="age"
+              ></ErrorMessage>
             </div>
             <!-- Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Password</label>
-              <input
+              <vee-field
+                name="password"
                 type="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Password"
               />
+              <ErrorMessage
+                class="text-red-400 text-xs"
+                name="password"
+              ></ErrorMessage>
             </div>
             <!-- Confirm Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Confirm Password</label>
-              <input
+              <vee-field
+                name="confirmPassword"
                 type="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Confirm Password"
+              />
+              <ErrorMessage
+                class="text-red-400 text-xs"
+                name="confirmPassword"
               />
             </div>
             <!-- Country -->
             <div class="mb-3">
               <label class="inline-block mb-2">Country</label>
-              <select
+              <vee-field
+                as="select"
+                name="country"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
               >
                 <option value="USA">USA</option>
                 <option value="Mexico">Mexico</option>
                 <option value="Germany">Germany</option>
-              </select>
+                <option value="France">France</option>
+                <option value="HongKong">HongKong</option>
+                <option value="Singapore">Singapore</option>
+              </vee-field>
+              <ErrorMessage class="text-red-400 text-xs" name="country" />
             </div>
             <!-- TOS -->
             <div class="mb-3 pl-6">
-              <input type="checkbox" class="w-4 h-4 float-left -ml-6 mt-1 rounded" />
+              <vee-field
+                name="tos"
+                value="1"
+                type="checkbox"
+                class="w-4 h-4 float-left -ml-6 mt-1 rounded"
+              />
               <label class="inline-block">Accept terms of service</label>
+              <ErrorMessage class="text-red-400 text-xs block" name="tos" />
             </div>
             <button
               type="submit"
@@ -148,36 +195,50 @@
             >
               Submit
             </button>
-          </form>
+          </vee-form>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState, mapWritableState } from 'pinia'
-import useModalStore from '@/stores/modal'
+import { mapState, mapWritableState } from 'pinia';
+import useModalStore from '@/stores/modal';
 
 export default {
   name: 'Auth',
 
   data() {
     return {
-      tab: 'login'
-    }
+      tab: 'login',
+      schema: {
+        name: 'required|min:6|max:20|alpha_spaces',
+        email: 'required|email',
+        age: 'required|min_value:18|max_value:100',
+        password: 'required|min:6|max:20',
+        confirmPassword: 'confirmed:@password',
+        country: 'required|excluded:HongKong,Singapore',
+        tos: 'required',
+      },
+    };
   },
 
   computed: {
     ...mapState(useModalStore, ['hiddenClass']),
     ...mapWritableState(useModalStore, {
-      modalVisibility: 'isOpen' // use alias for 'isOpen' state, just this component use 'modalVisibility'
-    })
+      modalVisibility: 'isOpen', // use alias for 'isOpen' state, just this component use 'modalVisibility'
+    }),
   },
 
   methods: {
     onCloseModal() {
-      this.modalVisibility = false
-    }
-  }
-}
+      this.modalVisibility = false;
+    },
+
+    onRegister(values) {
+      // values exist only when all field validated
+      console.log(values);
+    },
+  },
+};
 </script>
