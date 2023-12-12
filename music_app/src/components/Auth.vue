@@ -91,6 +91,7 @@
             v-show="tab === 'register'"
             :validation-schema="schema"
             @submit="onRegister"
+            :initial-values="userData"
           >
             <!-- Name -->
             <div class="mb-3">
@@ -138,10 +139,23 @@
               <label class="inline-block mb-2">Password</label>
               <vee-field
                 name="password"
-                type="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Password"
-              />
+                :bails="false"
+                v-slot="{ field, errors }"
+              >
+                <input
+                  type="password"
+                  class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
+                  placeholder="Password"
+                  v-bind="field"
+                />
+                <div
+                  class="text-red-400 text-xs"
+                  v-for="error in errors"
+                  :key="error"
+                >
+                  {{ error }}
+                </div>
+              </vee-field>
               <ErrorMessage
                 class="text-red-400 text-xs"
                 name="password"
@@ -215,10 +229,15 @@ export default {
         name: 'required|min:6|max:20|alpha_spaces',
         email: 'required|email',
         age: 'required|min_value:18|max_value:100',
-        password: 'required|min:6|max:20',
-        confirmPassword: 'confirmed:@password',
-        country: 'required|excluded:HongKong,Singapore',
-        tos: 'required',
+        password: 'required|min:6|max:20|excluded:password',
+        confirmPassword: 'password_mismatch:@password',
+        country: 'required|country_excluded:HongKong,Singapore',
+        tos: 'tos',
+      },
+
+      // vee-validate have the initial values to set the init value for field in form
+      userData: {
+        country: 'USA',
       },
     };
   },

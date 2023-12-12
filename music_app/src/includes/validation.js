@@ -3,6 +3,7 @@ import {
   Form as VeeForm,
   Field as VeeField,
   ErrorMessage,
+  configure, // custom configuration
 } from 'vee-validate';
 import {
   required,
@@ -29,7 +30,34 @@ export default {
     defineRule('email', email);
     defineRule('min_value', min_value);
     defineRule('max_value', max_value);
-    defineRule('confirmed', confirmed);
+    defineRule('password_mismatch', confirmed);
     defineRule('excluded', excluded);
+    defineRule('country_excluded', excluded);
+    defineRule('tos', required);
+
+    configure({
+      generateMessage: (context) => {
+        const messages = {
+          required: `The field ${context.field} is required.`,
+          min: `The field ${context.field} is too short.`,
+          max: `The field ${context.field} is too long.`,
+          alpha_spaces: `The field ${context.field} may only contain alphabetic characters and spaces.`,
+          email: `The field ${context.field} must be a valid email.`,
+          min_value: `The field ${context.field} is too low.`,
+          max_value: `The field ${context.field} is too high.`,
+          confirmed: `The field ${context.field} confirmation does not match.`,
+          excluded: `You are not allowed to use this value for the field ${context.field}.`,
+          country_excluded: `Due to restrictions, we do not accept users from this location.`,
+          password_mismatch: `The passwords don't match.`,
+          tos: `You must accept the Terms of service`,
+        };
+
+        const message = messages[context.rule.name]
+          ? messages[context.rule.name]
+          : `The field ${context.field} is invalid.`;
+
+        return message;
+      },
+    });
   },
 };
