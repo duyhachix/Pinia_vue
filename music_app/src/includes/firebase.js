@@ -1,12 +1,11 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 const firebaseConfig = {
-  apiKey: 'AIzaSyB8FOUwXOxQiaGBEw7H-I5X-N3UIm1QOeg',
-  authDomain: 'music-275ae.firebaseapp.com',
-  projectId: 'music-275ae',
-  storageBucket: 'music-275ae.appspot.com',
-  appId: '1:26746577836:web:73a3ad2b088c8a2e6b1009',
-  measurementId: 'G-W0PNRWR4JH',
+  apiKey: "AIzaSyDx4vDz8Tf1RtRLNwg0V1hnH9Wxw-bzfhQ",
+  authDomain: "music-pinia.firebaseapp.com",
+  projectId: "music-pinia",
+  storageBucket: "music-pinia.appspot.com",
+  appId: "1:289086431454:web:30da4b51a8b625f5bfe24f"
 };
 
 export default firebase.initializeApp(firebaseConfig);
