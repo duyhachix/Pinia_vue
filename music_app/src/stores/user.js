@@ -22,7 +22,7 @@ export default defineStore('user', {
 
       await userCredential.user.updateProfile({
         displayName: values.name,
-      }); 
+      });
 
       this.userLoggedIn = true;
     },

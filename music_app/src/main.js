@@ -10,11 +10,19 @@ import router from './router';
 // vee-validate plugin
 import VeeValidatePlugin from '@/includes/validation';
 // firebase
-import './includes/firebase';
-const app = createApp(App);
+import { auth } from './includes/firebase';
 
-app.use(createPinia());
-app.use(router);
-app.use(VeeValidatePlugin);
+// this event makes it safe to place vue instance inside of it
+let app;
+auth.onAuthStateChanged(() => {
+  // prevent app from being initialized multiple times
+  if (!app) {
+    app = createApp(App);
 
-app.mount('#app');
+    app.use(createPinia());
+    app.use(router);
+    app.use(VeeValidatePlugin);
+
+    app.mount('#app');
+  }
+});
