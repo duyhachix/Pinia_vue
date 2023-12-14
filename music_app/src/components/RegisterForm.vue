@@ -111,6 +111,8 @@
 
 <script>
 import { auth, usersCollection } from '@/includes/firebase';
+import { mapActions } from 'pinia';
+import useUserStore from '@/stores/user';
 
 export default {
   name: 'RegisterForm',
@@ -137,7 +139,13 @@ export default {
     };
   },
 
+  computed: {},
+
   methods: {
+    ...mapActions(useUserStore, {
+      createUser: 'register',
+    }),
+
     async onRegister(values) {
       // values exist only when all field validated
       console.log(values);
@@ -145,13 +153,9 @@ export default {
       this.reg_in_submission = true;
       this.reg_alert_variant = 'bg-indigo-400';
       this.reg_alert_message = 'Please wait, your account is being created.';
-      let userCredential = null;
 
       try {
-        userCredential = await auth.createUserWithEmailAndPassword(
-          values.email,
-          values.password,
-        );
+        await this.createUser(values);
       } catch (error) {
         this.reg_in_submission = false;
         this.reg_alert_variant = 'bg-red-400';
@@ -159,23 +163,9 @@ export default {
         return;
       }
       // insert additional information into db
-      try {
-        await usersCollection.add({
-          name: values.name,
-          email: values.email,
-          age: values.age,
-          country: values.country,
-        });
-      } catch (error) {
-        this.reg_in_submission = false;
-        this.reg_alert_variant = 'bg-red-400';
-        this.reg_alert_message = error.message;
-        return;
-      }
 
       this.reg_alert_variant = 'bg-green-500';
       this.reg_alert_message = 'Success, your account has been created.';
-      console.log(userCredential);
     },
   },
 };
