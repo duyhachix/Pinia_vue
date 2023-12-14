@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import firebase from '@/includes/firebase';
+import { auth, usersCollection } from '@/includes/firebase';
 
 export default {
   name: 'RegisterForm',
@@ -146,10 +146,26 @@ export default {
       this.reg_alert_variant = 'bg-indigo-400';
       this.reg_alert_message = 'Please wait, your account is being created.';
       let userCredential = null;
+
       try {
-        userCredential = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(values.email, values.password);
+        userCredential = await auth.createUserWithEmailAndPassword(
+          values.email,
+          values.password,
+        );
+      } catch (error) {
+        this.reg_in_submission = false;
+        this.reg_alert_variant = 'bg-red-400';
+        this.reg_alert_message = error.message;
+        return;
+      }
+      // insert additional information into db
+      try {
+        await usersCollection.add({
+          name: values.name,
+          email: values.email,
+          age: values.age,
+          country: values.country,
+        });
       } catch (error) {
         this.reg_in_submission = false;
         this.reg_alert_variant = 'bg-red-400';
@@ -159,6 +175,7 @@ export default {
 
       this.reg_alert_variant = 'bg-green-500';
       this.reg_alert_message = 'Success, your account has been created.';
+      console.log(userCredential);
     },
   },
 };
