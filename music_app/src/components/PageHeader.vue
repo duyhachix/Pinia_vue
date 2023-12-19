@@ -9,14 +9,24 @@
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
-          <li>
-            <a class="px-2 text-white" href="#" @click.prevent="onToggleAuthModal"
+          <li v-if="!userStore.userLoggedIn">
+            <a
+              class="px-2 text-white"
+              href="#"
+              @click.prevent="onToggleAuthModal"
               >Login / Register</a
             >
           </li>
-          <li>
-            <a class="px-2 text-white" href="#">Manage</a>
-          </li>
+          <template v-else>
+            <li>
+              <a class="px-2 text-white" href="#">Manage</a>
+            </li>
+            <li>
+              <a class="px-2 text-white" href="#" @click.prevent="onLogout"
+                >Log out</a
+              >
+            </li>
+          </template>
         </ul>
       </div>
     </nav>
@@ -24,19 +34,23 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia'
-import useModalStore from '@/stores/modal'
+import { mapStores, mapState } from 'pinia';
+import useModalStore from '@/stores/modal';
+import useUserStore from '@/stores/user';
 
 export default {
   name: 'PageHeader',
 
   computed: {
-    ...mapStores(useModalStore)
+    ...mapStores(useModalStore, useUserStore),
   },
   methods: {
     onToggleAuthModal() {
-      this.modalStore.isOpen = !this.modalStore.isOpen
-    }
-  }
-}
+      this.modalStore.isOpen = !this.modalStore.isOpen;
+    },
+    onLogout() {
+      this.userStore.signOut();
+    },
+  },
+};
 </script>
