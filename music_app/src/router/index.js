@@ -21,6 +21,8 @@ let routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  // linkActiveClass: 'text-yellow-500', // set style for active link (new issue)
+  linkExactActiveClass: 'text-yellow-500', // set class for the active link (new issue)
 });
 
 export default router;
