@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Manage from '@/views/Manage.vue';
+import NotFound404 from '@/views/NotFound404.vue';
 
 let routes = [
   {
@@ -24,8 +25,13 @@ let routes = [
     redirect: { name: 'manage' },
   },
   {
+    path: '/404',
+    name: 'not-found',
+    component: NotFound404,
+  },
+  {
     path: '/:catchAll(.*)*', // catch all path that doesn't exist
-    redirect: { name: 'home' }, // redirect to home (or usually 404 page)
+    redirect: { name: 'not-found' }, // redirect to home (or usually 404 page)
   },
 ];
 
