@@ -15,9 +15,17 @@ let routes = [
     component: About,
   },
   {
-    path: '/manage',
+    path: '/manage-music',
     name: 'manage',
     component: Manage,
+  },
+  {
+    path: '/manage',
+    redirect: { name: 'manage' },
+  },
+  {
+    path: '/:catchAll(.*)*', // catch all path that doesn't exist
+    redirect: { name: 'home' }, // redirect to home (or usually 404 page)
   },
 ];
 
