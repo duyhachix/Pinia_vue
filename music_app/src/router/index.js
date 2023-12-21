@@ -4,6 +4,8 @@ import About from '@/views/About.vue';
 import Manage from '@/views/Manage.vue';
 import NotFound404 from '@/views/NotFound404.vue';
 
+import useUserStore from '@/stores/user';
+
 let routes = [
   {
     path: '/',
@@ -23,6 +25,9 @@ let routes = [
     beforeEnter: (to, from, next) => {
       console.log('manage route Guard');
       next();
+    },
+    meta: {
+      requiresAuth: true,
     },
   },
   {
@@ -47,8 +52,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log('Global Route Guard');
-  next();
+  // route meta
+  if (!to.meta.requiresAuth) {
+    next();
+    return;
+  }
+
+  let store = useUserStore();
+  if (store.userLoggedIn) {
+    next();
+  } else {
+    next({ name: 'home' });
+  }
 });
 
 export default router;

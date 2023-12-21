@@ -177,21 +177,21 @@
   </section>
 </template>
 <script>
-import useUserStore from '@/stores/user';
+// import useUserStore from '@/stores/user';
 
 export default {
   name: 'Manage',
   data() {
     return {};
   },
-  // route setup
-  beforeRouteEnter(to, from, next) {
-    let store = useUserStore();
-    if (store.userLoggedIn) {
-      next();
-    } else {
-      next({ name: 'home' });
-    }
-  },
+  // // route setup
+  // beforeRouteEnter(to, from, next) {
+  //   let store = useUserStore();
+  //   if (store.userLoggedIn) {
+  //     next();
+  //   } else {
+  //     next({ name: 'home' });
+  //   }
+  // },
 };
 </script>
