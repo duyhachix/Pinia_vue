@@ -79,13 +79,33 @@ export default {
             text_class: '',
           }) - 1;
 
-        task.on('state_changed', (snapshot) => {
-          let percentage =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          // re-assign precentage value
-          this.uploads[uploadIndex].current_progress = percentage;
-          console.log(`Upload is ${percentage}%/100% done`);
-        });
+        task.on(
+          'state_changed',
+          // function1: handling the progress change
+          (snapshot) => {
+            let percentage =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            // re-assign precentage value
+            this.uploads[uploadIndex].current_progress = percentage;
+          },
+
+          // function2: handling the error (optional)
+          (error) => {
+            // change the properties of the upload object to error status
+            this.uploads[uploadIndex].variant = 'bg-red-400';
+            this.uploads[uploadIndex].icon = 'fas fa-exclamation-triangle';
+            this.uploads[uploadIndex].text_class = 'text-red-400';
+            console.error(error);
+          },
+
+          // function3: handling the success (optional)
+          () => {
+            // change the properties of the upload object to success status
+            this.uploads[uploadIndex].variant = 'bg-green-400';
+            this.uploads[uploadIndex].icon = 'fas fa-check';
+            this.uploads[uploadIndex].text_class = 'text-green-400';
+          },
+        );
       });
 
       console.log(files);
