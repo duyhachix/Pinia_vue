@@ -62,6 +62,9 @@ export default {
     },
     onLogout() {
       this.userStore.signOut();
+      if (this.$route.name === 'manage') {
+        this.$router.push({ name: 'home' });
+      }
     },
   },
 };
