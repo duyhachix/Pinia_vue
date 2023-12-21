@@ -18,6 +18,7 @@ let routes = [
   {
     path: '/manage-music',
     name: 'manage',
+    // alias: '/manage', // same behavior as redirect
     component: Manage,
   },
   {
