@@ -15,7 +15,7 @@
         @dragover.prevent.stop="is_dragover = true"
         @dragenter.prevent.stop="is_dragover = true"
         @dragleave.prevent.stop="is_dragover = false"
-        @drop.prevent.stop="onUpload"
+        @drop.prevent.stop="onUpload($event)"
       >
         <h5>Drop your files here</h5>
       </div>
@@ -54,6 +54,8 @@
   </div>
 </template>
 <script>
+import { storage } from '@/includes/firebase';
+
 export default {
   name: 'UploadSection',
   data() {
@@ -62,8 +64,26 @@ export default {
     };
   },
   methods: {
-    onUpload() {
+    onUpload($event) {
       this.is_dragover = false;
+      // default files is object, so that we need spread object into array
+      let files = [...$event.dataTransfer.files];
+
+      files.forEach((file) => {
+        if (file.type !== 'audio/mpeg') {
+          console.log('Invalid file type. Please upload an mp3 file.');
+          return;
+        }
+
+        // reference to the storage - it represent the path in firebase storage a.k.a "storageBucket"
+        // storageBucket : music-pinia.appspot.com,
+        const storageRef = storage.ref();
+        const songsRef = storageRef.child(`songs/${file.name}`); // 'music-pinia.appspot.com/songs/example.mp3'',
+        // upload file to firebase storage
+        songsRef.put(file);
+      });
+
+      console.log(files);
     },
   },
 };
