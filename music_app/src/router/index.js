@@ -20,6 +20,10 @@ let routes = [
     name: 'manage',
     // alias: '/manage', // same behavior as redirect
     component: Manage,
+    beforeEnter: (to, from, next) => {
+      console.log('manage route Guard');
+      next();
+    },
   },
   {
     path: '/manage',
@@ -40,6 +44,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   linkExactActiveClass: 'text-yellow-500', // set class for the active link (new issue)
+});
+
+router.beforeEach((to, from, next) => {
+  console.log('Global Route Guard');
+  next();
 });
 
 export default router;
