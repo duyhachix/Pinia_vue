@@ -50,13 +50,21 @@ export default {
       uploads: [],
     };
   },
+
+  beforeUnmount() {
+    // handling cancel uploading file when unmounting the component
+    this.uploads.forEach((upload) => {
+      upload.task.cancel();
+    });
+  },
+
   methods: {
     onUpload($event) {
       this.is_dragover = false;
 
       // default files is object, so that we need spread object into array
       let files = $event.dataTransfer
-        ? [...$event.dataTransfer.files] 
+        ? [...$event.dataTransfer.files]
         : [...$event.target.files];
 
       files.forEach((file) => {
