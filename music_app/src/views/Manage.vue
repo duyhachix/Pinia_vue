@@ -3,7 +3,7 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <upload-section></upload-section>
+        <upload-section ref="upload"></upload-section>
       </div>
       <div class="col-span-2">
         <div
@@ -142,6 +142,13 @@ export default {
   data() {
     return {};
   },
+  // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
+  // beforeRouteLeave(to, from, next) {
+  //   let uploadRef = this.$refs.upload;
+  //   uploadRef.onCancelUpload();
+  //   next();
+  // },
+
   // // route setup
   // beforeRouteEnter(to, from, next) {
   //   let store = useUserStore();

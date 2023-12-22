@@ -51,10 +51,14 @@ export default {
     };
   },
 
+  // Method 1 to cancel upload: using the lifecycle (in this app we just wanna use this method)
+  /**
+   * Cancel upload
+   */
   beforeUnmount() {
     // handling cancel uploading file when unmounting the component
     this.uploads.forEach((upload) => {
-      upload.task.cancel();
+      upload.task.cancel(); // cancel the request for all file uploading
     });
   },
 
@@ -134,6 +138,15 @@ export default {
       });
 
       console.log(files);
+    },
+
+    /**
+     * Cancel all uploads
+     */
+    onCancelUpload() {
+      this.uploads.forEach((upload) => {
+        upload.task.cancel();
+      });
     },
   },
 };
