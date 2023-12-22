@@ -39,7 +39,7 @@
   </div>
 </template>
 <script>
-import { storage } from '@/includes/firebase';
+import { auth, storage, songsCollection } from '@/includes/firebase';
 
 export default {
   name: 'UploadSection',
@@ -66,7 +66,7 @@ export default {
         const storageRef = storage.ref();
         const songsRef = storageRef.child(`songs/${file.name}`); // 'music-pinia.appspot.com/songs/example.mp3'',
 
-        // upload file to firebase storage
+        // upload file to firebase storage (*)
         let task = songsRef.put(file);
 
         let uploadIndex =
@@ -99,7 +99,20 @@ export default {
           },
 
           // function3: handling the success (optional)
-          () => {
+          async () => {
+            let song = {
+              uid: auth.currentUser.uid,
+              display_name: auth.currentUser.displayName,
+              original_name: task.snapshot.ref.name,
+              modified_name: task.snapshot.ref.name,
+              genre: '',
+              comment_count: 0,
+            };
+            song.url = await task.snapshot.ref.getDownloadURL();
+
+            // add object 'song' to the database (**)
+            await songsCollection.add(song);
+
             // change the properties of the upload object to success status
             this.uploads[uploadIndex].variant = 'bg-green-400';
             this.uploads[uploadIndex].icon = 'fas fa-check';
