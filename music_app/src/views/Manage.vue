@@ -18,9 +18,11 @@
           <div class="p-6">
             <!-- Composition Items -->
             <composition-item
-              v-for="song in songs"
+              v-for="(song, i) in songs"
               :key="song.docID"
               :song="song"
+              :index="i"
+              :updateSong="updateSong"
             ></composition-item>
           </div>
         </div>
@@ -60,6 +62,13 @@ export default {
 
       this.songs.push(song);
     });
+  },
+
+  methods: {
+    updateSong(i, values) {
+      this.song[i].modified_name = values.modified_name;
+      this.song[i].genre = values.genre;
+    },
   },
   // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
   // beforeRouteLeave(to, from, next) {
