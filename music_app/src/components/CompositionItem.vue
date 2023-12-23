@@ -4,6 +4,7 @@
       <h4 class="inline-block text-lg font-bold">{{ song.modified_name }}</h4>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
+        @click="openDialog"
       >
         <i class="fa fa-times"></i>
       </button>
@@ -13,6 +14,24 @@
       >
         <i class="fa fa-pencil-alt"></i>
       </button>
+      <el-dialog
+        v-model="centeredDialog"
+        width="40%"
+        align-center
+        title="Confirm"
+      >
+        <span>
+          <span>Do you want to delete the song ?</span>
+        </span>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button type="danger" @click="centeredDialog = false"
+              >Cancel</el-button
+            >
+            <el-button type="white" @click="onDeleteSong"> Confirm </el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
     <div v-show="showForm">
       <div
@@ -71,7 +90,7 @@
 </template>
 
 <script>
-import { songsCollection } from '@/includes/firebase';
+import { songsCollection, storage } from '@/includes/firebase';
 
 export default {
   name: 'CompositionItem',
@@ -81,6 +100,10 @@ export default {
       required: true,
     },
     updateSong: {
+      type: Function,
+      required: true,
+    },
+    deleteSong: {
       type: Function,
       required: true,
     },
@@ -100,6 +123,8 @@ export default {
       show_alert: false,
       alert_variant: 'bg-blue-500',
       alert_message: 'Please wait, updating song info ...',
+
+      centeredDialog: false,
     };
   },
   methods: {
@@ -132,6 +157,24 @@ export default {
 
     onCancel() {
       this.showForm = false;
+    },
+
+    openDialog() {
+      this.centeredDialog = true;
+    },
+
+    async onDeleteSong() {
+      // reference to the storage object
+      let storageref = storage.ref();
+      let songRef = storageref.child(`songs/${this.song.original_name}`);
+
+      await Promise.all([
+        songRef.delete(),
+        songsCollection.doc(this.song.docID).delete(),
+      ]);
+
+      // line 147, 149 nen co ham promise all hoac all settled
+      this.deleteSong(this.index);
     },
   },
 };

@@ -23,6 +23,7 @@
               :song="song"
               :index="i"
               :updateSong="updateSong"
+              :deleteSong="deleteSong"
             ></composition-item>
           </div>
         </div>
@@ -65,9 +66,22 @@ export default {
   },
 
   methods: {
+    /**
+     * Update song info event handler
+     * @param {Number} i: index of song
+     * @param {Object} values: values of song that were updated
+     */
     updateSong(i, values) {
       this.songs[i].modified_name = values.modified_name;
       this.songs[i].genre = values.genre;
+    },
+
+    /**
+     * Delete song event hanq
+     * @param {Number} i: index of song
+     */
+    deleteSong(i) {
+      this.songs.splice(i, 1);
     },
   },
   // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
