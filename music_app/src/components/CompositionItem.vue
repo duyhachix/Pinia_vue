@@ -123,11 +123,11 @@ export default {
         return;
       }
 
+      this.updateSong(this.index, values);
+
       this.in_submission = false;
       this.alert_variant = 'bg-green-500';
       this.alert_message = 'Song updated successfully';
-
-      this.updateSong(this.index, values);
     },
 
     onCancel() {
