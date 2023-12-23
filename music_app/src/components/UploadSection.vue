@@ -44,6 +44,12 @@ import { auth, storage, songsCollection } from '@/includes/firebase';
 
 export default {
   name: 'UploadSection',
+  props: {
+    addSong: {
+      type: Function,
+      required: true,
+    },
+  },
   data() {
     return {
       is_dragover: false,
@@ -125,9 +131,10 @@ export default {
               comment_count: 0,
             };
             song.url = await task.snapshot.ref.getDownloadURL();
-
             // add object 'song' to the database (**)
-            await songsCollection.add(song);
+            let songRef = await songsCollection.add(song);
+            let songSnapshot = await songRef.get();
+            this.addSong(songSnapshot);
 
             // change the properties of the upload object to success status
             this.uploads[uploadIndex].variant = 'bg-green-400';
