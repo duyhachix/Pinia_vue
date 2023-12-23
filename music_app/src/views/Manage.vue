@@ -24,6 +24,7 @@
               :index="i"
               :updateSong="updateSong"
               :deleteSong="deleteSong"
+              :updateUnsavedFlag="updateUnsavedFlag"
             ></composition-item>
           </div>
         </div>
@@ -46,6 +47,7 @@ export default {
   data() {
     return {
       songs: [],
+      unsavedFlag: false,
     };
   },
 
@@ -54,7 +56,6 @@ export default {
     let snapshot = await songsCollection
       .where('uid', '==', auth.currentUser.uid)
       .get();
-    console.log('snapshot', snapshot);
     snapshot.forEach(this.addSong);
   },
 
@@ -77,8 +78,10 @@ export default {
       this.songs.splice(i, 1);
     },
 
+    /**
+     * add song to songs list
+     */
     addSong(document) {
-      console.log('document', document);
       let song = {
         ...document.data(),
         docID: document.id,
@@ -86,6 +89,21 @@ export default {
 
       this.songs.push(song);
     },
+
+    updateUnsavedFlag(value) {
+      this.unsavedFlag = value;
+    },
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (!this.unsavedFlag) {
+      next();
+    } else {
+      let leave = confirm(
+        'You have unsaved changes, are you sure you want to leave?',
+      ); // return true/false
+      next(leave);
+    }
   },
   // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
   // beforeRouteLeave(to, from, next) {

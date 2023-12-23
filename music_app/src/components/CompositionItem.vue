@@ -53,6 +53,7 @@
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Song Title"
+            @input="updateUnsavedFlag(true)"
           />
           <ErrorMessage
             class="text-red-400"
@@ -66,6 +67,7 @@
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
+            @input="updateUnsavedFlag(true)"
           />
           <ErrorMessage class="text-red-200" name="genre"></ErrorMessage>
         </div>
@@ -111,13 +113,16 @@ export default {
       type: Number,
       required: true,
     },
+    updateUnsavedFlag: {
+      type: Function,
+    },
   },
   data() {
     return {
       showForm: false,
       schema: {
         modified_name: 'required',
-        genre: 'alpha_spaces',
+        genre: 'alpha_spaces|max:10|min:6',
       },
       in_submission: false,
       show_alert: false,
@@ -149,6 +154,7 @@ export default {
       }
 
       this.updateSong(this.index, values);
+      this.updateUnsavedFlag(false); // update unsaved flag
 
       this.in_submission = false;
       this.alert_variant = 'bg-green-500';
