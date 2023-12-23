@@ -66,8 +66,8 @@ export default {
 
   methods: {
     updateSong(i, values) {
-      this.song[i].modified_name = values.modified_name;
-      this.song[i].genre = values.genre;
+      this.songs[i].modified_name = values.modified_name;
+      this.songs[i].genre = values.genre;
     },
   },
   // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
