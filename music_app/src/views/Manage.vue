@@ -3,7 +3,7 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <upload-section ref="upload"></upload-section>
+        <upload-section :addSong="addSong" ref="upload"></upload-section>
       </div>
       <div class="col-span-2">
         <div
@@ -23,6 +23,8 @@
               :song="song"
               :index="i"
               :updateSong="updateSong"
+              :deleteSong="deleteSong"
+              :updateUnsavedFlag="updateUnsavedFlag"
             ></composition-item>
           </div>
         </div>
@@ -45,6 +47,7 @@ export default {
   data() {
     return {
       songs: [],
+      unsavedFlag: false,
     };
   },
 
@@ -53,22 +56,54 @@ export default {
     let snapshot = await songsCollection
       .where('uid', '==', auth.currentUser.uid)
       .get();
+    snapshot.forEach(this.addSong);
+  },
 
-    snapshot.forEach((document) => {
+  methods: {
+    /**
+     * Update song info event handler
+     * @param {Number} i: index of song
+     * @param {Object} values: values of song that were updated
+     */
+    updateSong(i, values) {
+      this.songs[i].modified_name = values.modified_name;
+      this.songs[i].genre = values.genre;
+    },
+
+    /**
+     * Delete song event hanq
+     * @param {Number} i: index of song
+     */
+    deleteSong(i) {
+      this.songs.splice(i, 1);
+    },
+
+    /**
+     * add song to songs list
+     */
+    addSong(document) {
       let song = {
         ...document.data(),
         docID: document.id,
       };
 
       this.songs.push(song);
-    });
+    },
+
+    updateUnsavedFlag(value) {
+      this.unsavedFlag = value;
+    },
   },
 
-  methods: {
-    updateSong(i, values) {
-      this.songs[i].modified_name = values.modified_name;
-      this.songs[i].genre = values.genre;
-    },
+  beforeRouteLeave(to, from, next) {
+    if (!this.unsavedFlag) {
+      next();
+    } else {
+      let leave = confirm(
+        'You have unsaved changes, are you sure you want to leave?',
+      ); // return true/false
+      next(leave);
+    }
   },
   // Method 2 to cancel upload: using the router guard (the best method to cancel upload but in this app we just need to use method 1)
   // beforeRouteLeave(to, from, next) {
