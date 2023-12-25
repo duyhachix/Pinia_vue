@@ -29,18 +29,33 @@
         <i class="fa fa-comments float-right text-green-400 text-2xl"></i>
       </div>
       <div class="p-6">
-        <form>
-          <textarea
-            class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded mb-4"
+        <div
+          class="text-white text-center font-bold p-4 mb-4"
+          v-if="comment_show_alert"
+          :class="comment_alert_variant"
+        >
+          {{ comment_alert_message }}
+        </div>
+        <vee-form
+          v-if="userLoggedIn"
+          :validation-schema="commentSchema"
+          @submit="addComment"
+        >
+          <vee-field
+            as="textarea"
+            name="comment"
+            class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded mb-2"
             placeholder="Your comment here..."
-          ></textarea>
+          ></vee-field>
+          <ErrorMessage class="text-red-400" name="comment"></ErrorMessage>
           <button
             type="submit"
             class="py-1.5 px-3 rounded text-white bg-green-600 block"
+            :disabled="comment_in_submission"
           >
             Submit
           </button>
-        </form>
+        </vee-form>
         <!-- Sort Comments -->
         <select
           class="block mt-4 py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
@@ -129,14 +144,27 @@
 </template>
 
 <script>
-import { songsCollection } from '@/includes/firebase';
+import { songsCollection, auth, commentsCollection } from '@/includes/firebase';
+
+import { mapState } from 'pinia';
+import useUserStore from '@/stores/user';
 
 export default {
   name: 'Song',
   data() {
     return {
       song: {},
+      commentSchema: {
+        comment: 'required|min:3',
+      },
+      comment_in_submission: false,
+      comment_show_alert: false,
+      comment_alert_variant: 'bg-blue-500',
+      comment_alert_message: 'Please wait, your comment is being submitted',
     };
+  },
+  computed: {
+    ...mapState(useUserStore, ['userLoggedIn']),
   },
 
   async created() {
@@ -146,8 +174,35 @@ export default {
       return;
     }
     this.song = docSnapshot.data();
+  },
+  methods: {
+    //
+    async addComment(values, { resetForm }) {
+      console.log(values);
 
-    console.log(this.song);
+      this.comment_in_submission = true;
+      this.comment_show_alert = true;
+      this.comment_alert_variant = 'bg-blue-500';
+      this.comment_alert_message =
+        'Please wait, your comment is being submitted';
+
+      let comment = {
+        content: values.comment,
+        postedDate: new Date().toString(),
+        sid: this.$route.params.id,
+        name: auth.currentUser.displayName,
+        uid: auth.currentUser.uid,
+      };
+
+      // Add the comment to the database
+      await commentsCollection.add(comment);
+
+      this.comment_in_submission = false;
+      this.comment_alert_variant = 'bg-green-500';
+      this.comment_alert_message = 'Your comment has been submitted';
+
+      resetForm();
+    },
   },
 };
 </script>

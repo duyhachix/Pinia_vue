@@ -69,7 +69,7 @@
             placeholder="Enter Genre"
             @input="updateUnsavedFlag(true)"
           />
-          <ErrorMessage class="text-red-200" name="genre"></ErrorMessage>
+          <ErrorMessage class="text-red-400" name="genre"></ErrorMessage>
         </div>
         <button
           type="submit"
