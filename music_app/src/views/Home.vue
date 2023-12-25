@@ -53,22 +53,71 @@ export default {
   data() {
     return {
       songs: [],
+      maxPerPage: 5,
+      pendingRequest: false,
       // unsavedFlag: false,
     };
   },
 
   async created() {
-    // query database for songs
-    let snapshot = await songsCollection.get();
-    // fill up songs state with songs collection ffrom database
-    snapshot.forEach((document) => {
-      this.songs.push({
-        docID: document.id,
-        ...document.data(),
-      });
-    });
+    this.getSong();
+    // add scroll event handler
+    window.addEventListener('scroll', this.handleScroll);
   },
 
-  methods: {},
+  async beforeUnmount() {
+    // remove scroll event handler
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
+  methods: {
+    handleScroll() {
+      let { scrollTop, offsetHeight } = document.documentElement;
+      let { innerHeight } = window;
+
+      let bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight;
+
+      if (bottomOfWindow) {
+        this.getSong();
+      }
+    },
+
+    /**
+     * query and set songs list
+     */
+    async getSong() {
+      if (this.pendingRequest) return;
+
+      this.pendingRequest = true;
+      let snapshot;
+      if (this.songs.length) {
+        //
+        let lastDoc = await songsCollection
+          .doc(this.songs[this.songs.length - 1].docID)
+          .get();
+
+        // query database for songs
+        snapshot = await songsCollection
+          .orderBy('modified_name')
+          .startAfter(lastDoc)
+          .limit(this.maxPerPage)
+          .get();
+      } else {
+        snapshot = await songsCollection
+          .orderBy('modified_name')
+          .limit(this.maxPerPage)
+          .get();
+      }
+      // fill up songs state with songs collection ffrom database
+      snapshot.forEach((document) => {
+        this.songs.push({
+          docID: document.id,
+          ...document.data(),
+        });
+      });
+
+      this.pendingRequest = false;
+    },
+  },
 };
 </script>
