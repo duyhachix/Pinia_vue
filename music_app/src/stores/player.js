@@ -5,6 +5,8 @@ const usePlayerStore = defineStore('player', {
   state: () => ({
     currentSong: {},
     sound: {},
+    seek: '00:00',
+    duration: '00:00',
   }),
 
   getters: {
@@ -27,12 +29,30 @@ const usePlayerStore = defineStore('player', {
       });
 
       this.sound.play();
+      this.sound.on('play', () => {
+        // requestAnimationFrame were used will execute a function passed into it
+        // the function gets called before next frame gets painted onto screen
+        // update the 'seek' and 'duration'
+        requestAnimationFrame(this.progress);
+      });
     },
 
     async toggleAudio() {
       if (!this.sound.playing) return;
 
       this.sound.playing() ? this.sound.pause() : this.sound.play();
+    },
+
+    async progress() {
+      // update seek and duration state
+      this.seek = this.sound.seek();
+      this.duration = this.sound.duration();
+
+      // check if the song is playing 
+      if (this.sound.playing()) {
+        // update and reflect the current progress of the song
+        requestAnimationFrame(this.progress);
+      }
     },
   },
 });

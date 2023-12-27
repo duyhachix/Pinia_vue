@@ -134,7 +134,6 @@ export default {
 
     let { sort } = this.$route.query;
     this.sort = sort === '1' || sort === '2' ? sort : '1';
-    console.log(sort);
     // get the song via route param not the prop
     this.song = docSnapshot.data();
     this.getComments();

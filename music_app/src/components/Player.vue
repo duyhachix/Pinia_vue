@@ -15,7 +15,7 @@
         ></i>
       </button>
       <!-- Current Position -->
-      <div class="player-currenttime">00:00</div>
+      <div class="player-currenttime">{{ seek }}</div>
       <!-- Scrub Container  -->
       <div class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
         <!-- Player Ball -->
@@ -28,11 +28,11 @@
         <!-- Player Progress Bar-->
         <span
           class="block h-2 rounded bg-gradient-to-r from-green-500 to-green-400"
-          style="width: 50%"
+          :style="{ width: `${(seek / duration) * 100}%` }"
         ></span>
       </div>
       <!-- Duration -->
-      <div class="player-duration">03:06</div>
+      <div class="player-duration">{{ duration }}</div>
     </div>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
   name: 'Player',
 
   computed: {
-    ...mapState(usePlayerStore, ['playing']),
+    ...mapState(usePlayerStore, ['playing', 'seek', 'duration']),
   },
 
   methods: {
