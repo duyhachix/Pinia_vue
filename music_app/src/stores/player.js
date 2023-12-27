@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Howl } from 'howler';
+import helper from '@/includes/helper';
 
 const usePlayerStore = defineStore('player', {
   state: () => ({
@@ -7,6 +8,7 @@ const usePlayerStore = defineStore('player', {
     sound: {},
     seek: '00:00',
     duration: '00:00',
+    playerProgress: '0%',
   }),
 
   getters: {
@@ -19,8 +21,16 @@ const usePlayerStore = defineStore('player', {
   },
 
   actions: {
+    /**
+     * player button click event handler in Player.vue file
+     * @param {Object} song: The song info
+     */
     async newSong(song) {
-      console.log('newSong action', song);
+      // check if Howl sound object is already exist then unload the song
+      if (this.sound instanceof Howl) {
+        this.sound.unload();
+      }
+
       this.currentSong = song;
       // use Howl to create a song object
       this.sound = new Howl({
@@ -45,10 +55,14 @@ const usePlayerStore = defineStore('player', {
 
     async progress() {
       // update seek and duration state
-      this.seek = this.sound.seek();
-      this.duration = this.sound.duration();
+      this.seek = helper.formatTime(this.sound.seek());
+      this.duration = helper.formatTime(this.sound.duration());
 
-      // check if the song is playing 
+      this.playerProgress = `${
+        (this.sound.seek() / this.sound.duration()) * 100
+      }%`;
+
+      // check if the song is playing
       if (this.sound.playing()) {
         // update and reflect the current progress of the song
         requestAnimationFrame(this.progress);
