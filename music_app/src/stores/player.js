@@ -45,6 +45,8 @@ const usePlayerStore = defineStore('player', {
         // update the 'seek' and 'duration'
         requestAnimationFrame(this.progress);
       });
+
+      this.sound.on('seek', () => requestAnimationFrame(this.progress));
     },
 
     async toggleAudio() {
@@ -53,7 +55,7 @@ const usePlayerStore = defineStore('player', {
       this.sound.playing() ? this.sound.pause() : this.sound.play();
     },
 
-    async progress() {
+    progress() {
       // update seek and duration state
       this.seek = helper.formatTime(this.sound.seek());
       this.duration = helper.formatTime(this.sound.duration());
@@ -67,6 +69,24 @@ const usePlayerStore = defineStore('player', {
         // update and reflect the current progress of the song
         requestAnimationFrame(this.progress);
       }
+    },
+
+    /**
+     *
+     * @param {Event} e
+     */
+    updateSeek(e) {
+      if (!this.sound.playing) return;
+
+      // get the x position of the mouse click relative to the progress bar
+      const { x, width } = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - x;
+      const percentage = clickX / width;
+      const seconds = this.sound.duration() * percentage;
+
+      // change the position
+      this.sound.seek(seconds);
+      // this.sound.once('seek', this.progress);
     },
   },
 });
