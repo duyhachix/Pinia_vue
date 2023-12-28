@@ -1,6 +1,12 @@
 <template>
   <PageHeader></PageHeader>
-  <router-view></router-view>
+  <router-view v-slot="{ Component, route }">
+    <transition name="fade" mode="out-in">
+      <div :key="route.name">
+        <component :is="Component"></component>
+      </div>
+    </transition>
+  </router-view>
   <player></player>
   <Auth></Auth>
 </template>
@@ -34,3 +40,16 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-from {
+  opacity: 0;
+}
+.fade-enter-active {
+  transition: all 0.5s linear;
+}
+.fade-leave-to {
+  transition: all 0.5s linear;
+  opacity: 0;
+}
+</style>
