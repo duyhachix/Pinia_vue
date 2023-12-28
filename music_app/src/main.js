@@ -15,6 +15,9 @@ import VeeValidatePlugin from '@/includes/validation';
 // firebase
 import { auth } from './includes/firebase';
 
+// import Icon directive
+import Icon from '@/directives/icon';
+
 // this event makes it safe to place vue instance inside of it
 let app;
 auth.onAuthStateChanged(() => {
@@ -26,6 +29,8 @@ auth.onAuthStateChanged(() => {
     app.use(router);
     app.use(VeeValidatePlugin);
     app.use(ElementPlus);
+    
+    app.directive('icon', Icon);
     
     app.mount('#app');
   }
