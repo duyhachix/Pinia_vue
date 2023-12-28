@@ -1,6 +1,5 @@
 <template>
   <PageHeader></PageHeader>
-
   <router-view></router-view>
   <player></player>
   <Auth></Auth>
