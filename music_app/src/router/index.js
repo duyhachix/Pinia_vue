@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Manage from '@/views/Manage.vue';
+import Song from '@/views/Song.vue';
 import NotFound404 from '@/views/NotFound404.vue';
 
 import useUserStore from '@/stores/user';
@@ -38,6 +39,11 @@ let routes = [
     path: '/404',
     name: 'not-found',
     component: NotFound404,
+  },
+  {
+    path: '/song/:id',
+    name: 'song',
+    component: Song,
   },
   {
     path: '/:catchAll(.*)*', // catch all path that doesn't exist
