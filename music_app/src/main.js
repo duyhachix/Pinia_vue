@@ -18,6 +18,8 @@ import { auth } from './includes/firebase';
 // import Icon directive
 import Icon from '@/directives/icon';
 
+import i18n from './includes/i18n';
+
 // this event makes it safe to place vue instance inside of it
 let app;
 auth.onAuthStateChanged(() => {
@@ -29,9 +31,10 @@ auth.onAuthStateChanged(() => {
     app.use(router);
     app.use(VeeValidatePlugin);
     app.use(ElementPlus);
-    
+    app.use(i18n);
+
     app.directive('icon', Icon);
-    
+
     app.mount('#app');
   }
 });

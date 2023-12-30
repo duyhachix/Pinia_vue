@@ -1,0 +1,12 @@
+{
+  "home": {
+    "listen": "Cùng nhau tận hưởng những bản nhạc hay!"
+  },
+  "song": {
+    "comment_count": "Không có bình luận nào | 1 bình luận| {count} bình luận"
+  },
+  "register": {
+    "accept": "Tôi chấp nhận {0} của Vite music",
+    "tos": "Điều khoản dịch vụ"
+  }
+}
