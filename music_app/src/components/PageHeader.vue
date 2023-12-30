@@ -40,6 +40,7 @@
             </li>
           </template>
         </ul>
+        <multi-language></multi-language>
       </div>
     </nav>
   </header>
@@ -50,12 +51,18 @@ import { mapStores } from 'pinia';
 import useModalStore from '@/stores/modal';
 import useUserStore from '@/stores/user';
 
+import MultiLanguage from '@/components/MultiLanguage.vue';
+
 export default {
   name: 'PageHeader',
+  components: {
+    MultiLanguage,
+  },
 
   computed: {
     ...mapStores(useModalStore, useUserStore),
   },
+
   methods: {
     onToggleAuthModal() {
       this.modalStore.isOpen = !this.modalStore.isOpen;
