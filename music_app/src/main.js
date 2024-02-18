@@ -20,6 +20,9 @@ import Icon from '@/directives/icon';
 
 import i18n from './includes/i18n';
 
+import { registerSW } from 'virtual:pwa-register';
+registerSW({ immediate: true });
+
 // this event makes it safe to place vue instance inside of it
 let app;
 auth.onAuthStateChanged(() => {

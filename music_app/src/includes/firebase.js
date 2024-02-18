@@ -21,6 +21,10 @@ const usersCollection = db.collection('users');
 const songsCollection = db.collection('songs');
 const commentsCollection = db.collection('comments');
 
+db.enablePersistence().catch((error) => {
+  console.log(`Firebase persistance error: ${error.code}`);
+});
+
 export {
   auth,
   db,
