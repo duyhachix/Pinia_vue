@@ -83,6 +83,18 @@ export default {
           return;
         }
 
+        if (!navigator.onLine) {
+          this.uploads.push({
+            task: {},
+            current_progress: 100,
+            name: file.name,
+            variant: 'bg-red-400',
+            icon: 'fas fa-times',
+            text_class: 'text-red-400',
+          });
+          return;
+        }
+
         // reference to the storage - it represent the path in firebase storage a.k.a "storageBucket"
         // storageBucket : music-pinia.appspot.com,
         const storageRef = storage.ref();
